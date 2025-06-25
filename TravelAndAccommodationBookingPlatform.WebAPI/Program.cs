@@ -1,10 +1,20 @@
+using Microsoft.EntityFrameworkCore;
+using TravelAndAccommodationBookingPlatform.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var connectionString = Environment.GetEnvironmentVariable("TravelABP_DB_CONNECTION");
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new Exception("Connection string not found in environment variables.");
+}
+
+builder.Services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(connectionString));
+
+//builder.Services.AddControllers();
+//builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
@@ -16,8 +26,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
-app.MapControllers();
+//app.MapControllers();
 
 app.Run();
