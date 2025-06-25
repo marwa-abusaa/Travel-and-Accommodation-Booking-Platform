@@ -7,6 +7,7 @@ public interface IHotelRepository
 {
     public Task<Hotel> AddHotelAsync(Hotel hotel);
     public Task<Hotel?> GetHotelByIdAsync(int hotelId);
+    public Task<IEnumerable<Hotel>> GetHotelsByOwnerIdAsync(int ownerId);
     public Task DeleteHotelAsync(int hotelId);
     public Task UpdateHotelAsync(Hotel hotel);
     public Task<IEnumerable<Hotel>> SearchHotelAsync();
