@@ -6,9 +6,7 @@ public class Booking
 {
     public int BookingId { get; set; }
     public int UserId { get; set; }
-    public int HotelId { get; set; }
     public User User { get; set; }
-    public Hotel Hotel { get; set; }
     public decimal TotalPriceBeforeDiscount { get; set; }
     public decimal TotalPriceAfterDiscount { get; set; }
     public string Remarks { get; set; } = string.Empty;
