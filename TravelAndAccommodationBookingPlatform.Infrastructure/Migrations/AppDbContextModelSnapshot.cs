@@ -382,6 +382,12 @@ namespace TravelAndAccommodationBookingPlatform.Infrastructure.Migrations
                     b.Property<int>("HotelId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PricePerNight")
+                        .HasColumnType("int");
+
                     b.Property<int>("RoomClass")
                         .HasColumnType("int");
 
