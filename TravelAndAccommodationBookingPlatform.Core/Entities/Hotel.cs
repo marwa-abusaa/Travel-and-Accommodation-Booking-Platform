@@ -1,6 +1,6 @@
 ﻿namespace TravelAndAccommodationBookingPlatform.Core.Entities;
 
-public class Hotel
+public class Hotel : AuditableEntity
 {
     public int HotelId { get; set; }
     public string Name { get; set; } = string.Empty;

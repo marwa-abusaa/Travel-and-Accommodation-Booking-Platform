@@ -1,6 +1,6 @@
 ﻿namespace TravelAndAccommodationBookingPlatform.Core.Entities;
 
-public class Review
+public class Review : AuditableEntity
 {
     public int ReviewId { get; set; }
     public string Comment { get; set; } = string.Empty;

@@ -2,7 +2,7 @@
 
 namespace TravelAndAccommodationBookingPlatform.Core.Entities;
 
-public class Room
+public class Room : AuditableEntity
 {
     public int RoomId { get; set; }
     public string Description { get; set; } = string.Empty;
