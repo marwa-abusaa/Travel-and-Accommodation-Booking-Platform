@@ -6,11 +6,12 @@ namespace TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
 
 public interface IRoomRepository
 {
-    public Task<Room> AddRoomAsync(Room room);
-    public Task<Room?> GetRoomByIdAsync(int roomId);
-    public Task DeleteRoomAsync(int roomId);
-    public Task UpdateRoomAsync(Room room);
-    public Task<PaginatedResult<Room>> GetAllRoomsAsync(int hotelId, PaginationMetadata pagination);
-    public Task<IEnumerable<Room>> SearchRoomAsync();
-    Task<IEnumerable<Room>> GetRoomsWithRoomClassAsync(RoomClass roomClass);
+    Task<Room> AddRoomAsync(Room room);
+    Task<Room?> GetRoomByIdAsync(int roomId);
+    Task DeleteRoomByIdAsync(int roomId);
+    Task UpdateRoomAsync(Room room);
+    Task<PaginatedResult<Room>> GetRoomsByHotelIdAsync(int hotelId, PaginationMetadata pagination);
+    Task<IEnumerable<Room>> SearchRoomAsync();
+    Task<bool> IsRoomAvailableAsync(int roomId);
+    Task<PaginatedResult<Room>> GetAvailableRoomsByHotelIdAsync(int hotelId, PaginationMetadata pagination);
 }
