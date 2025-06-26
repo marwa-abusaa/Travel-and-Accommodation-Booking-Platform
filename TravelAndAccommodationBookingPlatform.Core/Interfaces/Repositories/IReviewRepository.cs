@@ -5,11 +5,11 @@ namespace TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
 
 public interface IReviewRepository
 {
-    public Task<Review> AddReviewAsync(Review review);
-    public Task<Review?> GetReviewByIdAsync(int reviewId);
-    public Task UpdateReviewAsync(Review review);
-    public Task DeleteReviewAsync(int reviewId);
+    Task<Review> AddReviewAsync(Review review);
+    Task<Review?> GetReviewByIdAsync(int reviewId);
+    Task UpdateReviewAsync(Review review);
+    Task DeleteReviewByIdAsync(int reviewId);
     Task<double> GetHotelRatingAsync(int hotelId);
-    public Task<PaginatedResult<Review>> GetHotelReviewsAsync(int hotelId, PaginationMetadata pagination);
-    public Task<Review> GetUserReviewAsync(int userId, int hotelId);
+    Task<PaginatedResult<Review>> GetHotelReviewsAsync(int hotelId, PaginationMetadata pagination);
+    Task<Review?> GetUserReviewForHotelAsync(int userId, int hotelId);
 }

@@ -5,12 +5,12 @@ namespace TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
 
 public interface ICityRepository
 {
-    public Task<City> AddCityAsync(City city);
-    public Task<City?> GetCityByIdAsync(int cityId);
-    public Task DeleteCityAsync(int cityId);
-    public Task UpdateCityAsync(City city);
-    public Task<IEnumerable<City>> GetMostVisitedCitiesAsync(int count);
-    public Task<IEnumerable<City>> SearchCityAsync();
-    public Task<PaginatedResult<City>> GetAllCities(PaginationMetadata pagination);
+    Task<City> AddCityAsync(City city);
+    Task<City?> GetCityByIdAsync(int cityId);
+    Task DeleteCityByIdAsync(int cityId);
+    Task UpdateCityAsync(City city);
+    Task<IEnumerable<City>> GetMostVisitedCitiesAsync(int count);
+    Task<IEnumerable<City>> SearchCityAsync();
+    Task<PaginatedResult<City>> GetCitiesAsync(PaginationMetadata pagination);
 }
 
