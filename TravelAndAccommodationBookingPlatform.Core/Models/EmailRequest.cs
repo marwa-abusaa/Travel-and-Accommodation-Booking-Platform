@@ -5,5 +5,5 @@ public class EmailRequest
     public string? ToUserEmail { get; set; }
     public string? Subject { get; set; }
     public string? MessageBody { get; set; }
-    IEnumerable<FileAttachment>? FileAttachment { get; set; }
+    public IEnumerable<FileAttachment>? FileAttachment { get; set; }
 }
