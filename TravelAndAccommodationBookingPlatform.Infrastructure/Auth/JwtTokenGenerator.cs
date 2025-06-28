@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,18 +11,17 @@ namespace TravelAndAccommodationBookingPlatform.Infrastructure.Auth;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
-    private readonly IConfiguration _configuration;
+    private readonly JwtSettings _jwtSettings;
 
-    public JwtTokenGenerator(IConfiguration configuration)
+    public JwtTokenGenerator(IOptions<JwtSettings> jwtSettings)
     {
-        _configuration = configuration;
+        _jwtSettings = jwtSettings.Value;
     }
 
     public JwtToken GenerateToken(User inputUser)
     {
-        var keyString = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString!));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
 
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -35,10 +34,10 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         };
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["JwtSettings:Issuer"],
-            audience: _configuration["JwtSettings:Audience"],
+            issuer: _jwtSettings.Issuer,
+            audience: _jwtSettings.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JwtSettings:ExpiresInMinutes"])),
+            expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiresInMinutes),
             signingCredentials: credentials
         );
 
