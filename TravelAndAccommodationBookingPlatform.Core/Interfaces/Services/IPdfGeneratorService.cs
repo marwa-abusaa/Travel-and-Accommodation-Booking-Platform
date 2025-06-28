@@ -1,9 +1,6 @@
-﻿using TravelAndAccommodationBookingPlatform.Core.Entities;
+﻿namespace TravelAndAccommodationBookingPlatform.Core.Interfaces.Services;
 
-namespace TravelAndAccommodationBookingPlatform.Core.Interfaces.Services
+public interface IPdfGeneratorService
 {
-    public interface IPdfGeneratorService
-    {
-        public Task SavePaymentConfirmationAsPdf(Invoice invoice, string filePath);
-    }
+    byte[] GeneratePdfFromHtml(string htmlContent);
 }
