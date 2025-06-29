@@ -7,7 +7,7 @@ public class Room : AuditableEntity
     public int RoomId { get; set; }
     public string Description { get; set; } = string.Empty;
     public bool IsAvailable { get; set; }
-    public int PricePerNight { get; set; }
+    public decimal PricePerNight { get; set; }
     public int HotelId { get; set; }
     public Hotel Hotel { get; set; }
     public int AdultCapacity { get; set; }
