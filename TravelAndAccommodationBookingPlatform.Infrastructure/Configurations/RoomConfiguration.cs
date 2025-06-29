@@ -20,6 +20,9 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
                .IsRequired()
                .HasDefaultValueSql("GETUTCDATE()");
 
+        builder.Property(r => r.PricePerNight)
+               .HasPrecision(18, 2);
+
         builder.HasOne(rm => rm.Hotel)
               .WithMany(h => h.Rooms)
               .HasForeignKey(rm => rm.HotelId)
