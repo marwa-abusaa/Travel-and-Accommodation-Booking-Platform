@@ -7,7 +7,7 @@ using TravelAndAccommodationBookingPlatform.Core.Entities;
 using TravelAndAccommodationBookingPlatform.Core.Interfaces.Auth;
 using TravelAndAccommodationBookingPlatform.Core.Models;
 
-namespace TravelAndAccommodationBookingPlatform.Infrastructure.Auth;
+namespace TravelAndAccommodationBookingPlatform.Infrastructure.Services.Auth;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
