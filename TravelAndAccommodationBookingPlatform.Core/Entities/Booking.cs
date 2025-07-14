@@ -14,5 +14,6 @@ public class Booking
     public DateOnly CheckInDate { get; set; }
     public DateOnly CheckOutDate { get; set; }
     public DateOnly BookingDate { get; set; }
+    public Invoice Invoice { get; set; }
     public ICollection<Room> Rooms { get; set; } = new List<Room>();
 }
