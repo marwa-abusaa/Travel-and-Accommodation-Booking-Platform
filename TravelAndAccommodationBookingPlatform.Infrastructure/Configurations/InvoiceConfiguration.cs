@@ -16,8 +16,8 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
 
 
         builder.HasOne(iv => iv.Booking)
-               .WithOne()
-               .HasForeignKey<Invoice>(iv => iv.BookingId)
-               .OnDelete(DeleteBehavior.Restrict);
+       .WithOne(b => b.Invoice) 
+       .HasForeignKey<Invoice>(iv => iv.BookingId)
+       .OnDelete(DeleteBehavior.Restrict);
     }
 }
