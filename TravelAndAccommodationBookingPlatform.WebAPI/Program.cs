@@ -19,8 +19,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(conne
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
-builder.Services.AddScoped<IPdfGeneratorService, PdfGeneratorService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+//builder.Services.AddScoped<IPdfGeneratorService, PdfGeneratorService>();
+//builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+    });
 
 //builder.Services.AddControllers();
 //builder.Services.AddOpenApi();
