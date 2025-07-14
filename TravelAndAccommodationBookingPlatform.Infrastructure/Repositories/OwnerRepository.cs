@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TravelAndAccommodationBookingPlatform.Core.Entities;
 using TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Infrastructure.Data;
@@ -32,6 +33,11 @@ public class OwnerRepository : IOwnerRepository
     public async Task<Owner?> GetOwnerByIdAsync(int ownerId)
     {
         return await _context.Owners.FindAsync(ownerId);
+    }
+
+    public async Task<bool> IsOwnerExistsAsync(Expression<Func<Owner, bool>> predicate)
+    {
+        return await _context.Owners.AnyAsync(predicate);
     }
 
     public async Task UpdateOwnerAsync(Owner owner)

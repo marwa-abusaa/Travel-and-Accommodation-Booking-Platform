@@ -66,10 +66,6 @@ public class ReviewRepository : IReviewRepository
         return await _context.Reviews.FindAsync(reviewId);
     }
 
-    public async Task<Review?> GetUserReviewForHotelAsync(int userId, int hotelId)
-    {
-        return await _context.Reviews.FirstOrDefaultAsync(r => r.UserId == userId && r.HotelId == hotelId);
-    }
 
     public async Task UpdateReviewAsync(Review review)
     {

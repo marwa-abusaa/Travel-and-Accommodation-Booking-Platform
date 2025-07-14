@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TravelAndAccommodationBookingPlatform.Core.Entities;
 using TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
-using TravelAndAccommodationBookingPlatform.Core.Models;
 using TravelAndAccommodationBookingPlatform.Infrastructure.Data;
 
 namespace TravelAndAccommodationBookingPlatform.Infrastructure.Repositories;
@@ -30,23 +30,9 @@ public class CityRepository : ICityRepository
         }
     }
 
-    public async Task<PaginatedResult<City>> GetCitiesAsync(PaginationMetadata pagination)
+    public IQueryable<City> GetAllAsQueryable()
     {
-        pagination.TotalCount = await _context.Cities.CountAsync();
-
-        if (pagination.PageNumber > pagination.TotalPages && pagination.TotalPages != 0)
-            pagination.PageNumber = pagination.TotalPages;
-
-        var skip = (pagination.PageNumber - 1) * pagination.PageSize;
-
-        var query = _context.Cities.AsQueryable();
-
-        var items = await query
-            .Skip(skip)
-            .Take(pagination.PageSize)
-            .ToListAsync();
-
-        return new PaginatedResult<City>(items, pagination);
+        return _context.Cities.Include(c => c.Hotels);
     }
 
     public async Task<City?> GetCityByIdAsync(int cityId)
@@ -68,9 +54,9 @@ public class CityRepository : ICityRepository
         return topCities;
     }
 
-    public async Task<IEnumerable<City>> SearchCityAsync()
+    public async Task<bool> IsCityExistsAsync(Expression<Func<City, bool>> predicate)
     {
-        throw new NotImplementedException();
+        return await _context.Cities.AnyAsync(predicate);
     }
 
     public async Task UpdateCityAsync(City city)
