@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TravelAndAccommodationBookingPlatform.Core.Entities;
 using TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Core.Models;
@@ -39,7 +40,15 @@ public class RoomRepository : IRoomRepository
 
         var skip = (pagination.PageNumber - 1) * pagination.PageSize;
 
-        var query = _context.Rooms.Where(r => r.HotelId == hotelId && r.IsAvailable == true).AsQueryable();
+        var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var query = _context.Rooms
+            .Include(r => r.Bookings)
+            .Include(r => r.Images)
+            .Where(r => r.HotelId == hotelId)
+            .Where(r => !r.Bookings.Any(b =>
+                b.CheckInDate <= currentDate && b.CheckOutDate > currentDate))
+            .AsQueryable();
 
         var items = await query
             .Skip(skip)
@@ -51,37 +60,32 @@ public class RoomRepository : IRoomRepository
 
     public async Task<Room?> GetRoomByIdAsync(int roomId)
     {
-        return await _context.Rooms.FindAsync(roomId);
+        return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId);
     }
 
-    public async Task<PaginatedResult<Room>> GetRoomsByHotelIdAsync(int hotelId, PaginationMetadata pagination)
+    
+    public async Task<bool> IsRoomAvailableAsync(int roomId, DateOnly fromDate, DateOnly toDate)
     {
-        pagination.TotalCount = await _context.Rooms.CountAsync();
+        var room = await _context.Rooms
+            .Include(r => r.Bookings)
+            .FirstOrDefaultAsync(r => r.RoomId == roomId);
 
-        if (pagination.PageNumber > pagination.TotalPages && pagination.TotalPages != 0)
-            pagination.PageNumber = pagination.TotalPages;
+        if (room == null)
+            return false;
 
-        var skip = (pagination.PageNumber - 1) * pagination.PageSize;
-
-        var query = _context.Rooms.Where(r => r.HotelId == hotelId).AsQueryable();
-
-        var items = await query
-            .Skip(skip)
-            .Take(pagination.PageSize)
-            .ToListAsync();
-
-        return new PaginatedResult<Room>(items, pagination);
+        return room.Bookings.All(b =>
+            b.CheckOutDate <= fromDate || b.CheckInDate >= toDate);
     }
 
-    public async Task<bool> IsRoomAvailableAsync(int roomId)
+    public async Task<bool> IsRoomExistsAsync(Expression<Func<Room, bool>> predicate)
     {
-        var room = await GetRoomByIdAsync(roomId);
-        return room != null && room.IsAvailable;
+        return await _context.Rooms.AnyAsync(predicate);
     }
 
-    public Task<IEnumerable<Room>> SearchRoomAsync()
+    public IQueryable<Room> GetAllAsQueryable()
     {
-        throw new NotImplementedException();
+        return _context.Rooms
+            .Include(r => r.Bookings);
     }
 
     public async Task UpdateRoomAsync(Room room)
