@@ -12,7 +12,7 @@ public class HotelConfiguration : IEntityTypeConfiguration<Hotel>
 
         builder.Property(h => h.Name).IsRequired().HasMaxLength(50);
         builder.Property(h => h.Location).IsRequired().HasMaxLength(50);
-        builder.Property(h => h.Description).IsRequired().HasMaxLength(400);
+        builder.Property(h => h.FullDescription).IsRequired().HasMaxLength(400);
         builder.Property(h => h.PhoneNumber).IsRequired();
 
         builder.Property(h => h.CreatedAt)
@@ -30,5 +30,11 @@ public class HotelConfiguration : IEntityTypeConfiguration<Hotel>
                .HasForeignKey(h => h.OwnerId)
                .OnDelete(DeleteBehavior.Restrict)
                .IsRequired();
+
+        builder.HasOne(h => h.Thumbnail)
+               .WithMany()
+               .HasForeignKey(h => h.ThumbnailId)
+               .OnDelete(DeleteBehavior.SetNull);
+
     }
 }
