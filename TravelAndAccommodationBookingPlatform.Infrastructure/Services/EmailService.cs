@@ -16,7 +16,7 @@ public class EmailService : IEmailService
         _smtpSettings = smtpSettings.Value;
     }
 
-    public async Task SendPaymentConfirmationEmailAsync(EmailRequest emailRequest)
+    public async Task SendEmailAsync(EmailRequest emailRequest)
     {
         var email = new MimeMessage();
 
@@ -29,9 +29,9 @@ public class EmailService : IEmailService
             HtmlBody = emailRequest.MessageBody
         };
 
-        if (emailRequest.FileAttachment != null)
+        if (emailRequest.FileAttachments != null)
         {
-            foreach (var attachment in emailRequest.FileAttachment)
+            foreach (var attachment in emailRequest.FileAttachments)
             {
                 builder.Attachments.Add(attachment.FileName, attachment.Content, ContentType.Parse(attachment.ContentType));
             }
