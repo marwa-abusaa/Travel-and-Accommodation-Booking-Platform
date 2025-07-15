@@ -1,5 +1,5 @@
-﻿using TravelAndAccommodationBookingPlatform.Core.Entities;
-using TravelAndAccommodationBookingPlatform.Core.Models;
+﻿using System.Linq.Expressions;
+using TravelAndAccommodationBookingPlatform.Core.Entities;
 
 namespace TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
 
@@ -10,7 +10,7 @@ public interface ICityRepository
     Task DeleteCityByIdAsync(int cityId);
     Task UpdateCityAsync(City city);
     Task<IEnumerable<City>> GetMostVisitedCitiesAsync(int count);
-    Task<IEnumerable<City>> SearchCityAsync();
-    Task<PaginatedResult<City>> GetCitiesAsync(PaginationMetadata pagination);
+    IQueryable<City> GetAllAsQueryable();
+    Task<bool> IsCityExistsAsync(Expression<Func<City, bool>> predicate);
 }
 

@@ -11,5 +11,4 @@ public interface IReviewRepository
     Task DeleteReviewByIdAsync(int reviewId);
     Task<double> GetHotelRatingAsync(int hotelId);
     Task<PaginatedResult<Review>> GetHotelReviewsAsync(int hotelId, PaginationMetadata pagination);
-    Task<Review?> GetUserReviewForHotelAsync(int userId, int hotelId);
 }

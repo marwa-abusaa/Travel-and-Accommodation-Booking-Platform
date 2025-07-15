@@ -8,7 +8,10 @@ public class Hotel : AuditableEntity
     public City City { get; set; }
     public int OwnerId { get; set; }
     public Owner Owner { get; set; }
-    public string Description { get; set; } = string.Empty;
+    public int? ThumbnailId { get; set; }
+    public Image? Thumbnail { get; set; }
+    public string FullDescription { get; set; } = string.Empty;
+    public string BriefDescription { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public int StarRating { get; set; }
     public string Location { get; set; } = string.Empty;

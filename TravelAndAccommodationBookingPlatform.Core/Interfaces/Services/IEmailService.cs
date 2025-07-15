@@ -4,5 +4,5 @@ namespace TravelAndAccommodationBookingPlatform.Core.Interfaces.Services;
 
 public interface IEmailService
 {
-    Task SendPaymentConfirmationEmailAsync(EmailRequest emailRequest);
+    Task SendEmailAsync(EmailRequest emailRequest);
 }
