@@ -12,7 +12,7 @@ namespace TravelAndAccommodationBookingPlatform.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/bookings/{bookingId:int}/invoices")]
-[Authorize(Roles = UserRoles.Guest)]
+[Authorize(Roles = UserRoles.User)]
 public class InvoicesController : ControllerBase
 {
     private readonly IInvoiceQueryService _invoiceQueryService;

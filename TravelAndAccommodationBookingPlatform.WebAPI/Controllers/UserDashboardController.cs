@@ -11,7 +11,7 @@ namespace TravelAndAccommodationBookingPlatform.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/user/dashboard")]
-[Authorize(Roles = UserRoles.Guest)]
+[Authorize(Roles = UserRoles.User)]
 public class UserDashboardController : ControllerBase
 {
     private readonly IBookingQueryService _bookingQueryService;
