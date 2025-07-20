@@ -16,5 +16,5 @@ public class Room : AuditableEntity
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     public ICollection<Discount> Discounts { get; set; } = new List<Discount>();
     public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
+    public override DateTime? UpdatedAt { get; set; }
 }
