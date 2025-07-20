@@ -49,4 +49,15 @@ public class DiscountRepository : IDiscountRepository
         .OrderByDescending(d => d.Percentage)
         .FirstOrDefaultAsync();
     }
+
+    public async Task<Discount?> GetBestValidDiscountForRoomAsync(int roomId, DateTime checkIn, DateTime checkOut)
+    {
+        return await _context.Discounts
+        .Where(d =>
+            d.RoomId == roomId &&
+            d.StartDate <= checkOut &&
+            d.EndDate >= checkIn)
+        .OrderByDescending(d => d.Percentage)
+        .FirstOrDefaultAsync();
+    }
 }

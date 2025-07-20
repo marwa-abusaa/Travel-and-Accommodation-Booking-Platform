@@ -96,7 +96,7 @@ public class HotelRepository : IHotelRepository
             })
             .Where(x => x.Hotel != null)
             .GroupBy(x => x.Hotel.HotelId)
-            .Select(g => g.First()) 
+            .Select(g => g.First())
             .Take(5)
             .Select(x => new VisitedHotelDto
             {
@@ -115,7 +115,7 @@ public class HotelRepository : IHotelRepository
     public IQueryable<Hotel> GetAllAsQueryable()
     {
         return _context.Hotels
-            .Include(h=>h.Owner)
+            .Include(h => h.Owner)
             .Include(h => h.Rooms)
                 .ThenInclude(r => r.Bookings)
             .AsQueryable();
