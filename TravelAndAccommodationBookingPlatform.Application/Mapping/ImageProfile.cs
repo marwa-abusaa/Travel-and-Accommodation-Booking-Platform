@@ -4,9 +4,9 @@ using TravelAndAccommodationBookingPlatform.Core.Entities;
 
 namespace TravelAndAccommodationBookingPlatform.Application.Mapping;
 
-public class ImageMapper : Profile
+public class ImageProfile : Profile
 {
-    public ImageMapper()
+    public ImageProfile()
     {
         CreateMap<CreateImageDto, Image>();
         CreateMap<UpdateImageDto, Image>();

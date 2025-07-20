@@ -4,9 +4,9 @@ using TravelAndAccommodationBookingPlatform.Core.Entities;
 
 namespace TravelAndAccommodationBookingPlatform.Application.Mapping;
 
-public class ReviewMapper : Profile
+public class ReviewProfile : Profile
 {
-    public ReviewMapper()
+    public ReviewProfile()
     {
         CreateMap<CreateReviewDto, Review>();
         CreateMap<UpdateReviewDto, Review>();

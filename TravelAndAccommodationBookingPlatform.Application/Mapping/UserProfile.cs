@@ -5,9 +5,9 @@ using TravelAndAccommodationBookingPlatform.Core.Models;
 
 namespace TravelAndAccommodationBookingPlatform.Application.Mapping;
 
-public class UserMapper : Profile
+public class UserProfile : Profile
 {
-    public UserMapper()
+    public UserProfile()
     {
         CreateMap<SignUpDto, User>();
         CreateMap<JwtToken, TokenResponseDto>();

@@ -5,9 +5,9 @@ using TravelAndAccommodationBookingPlatform.Core.Entities;
 
 namespace TravelAndAccommodationBookingPlatform.Application.Mapping;
 
-public class CityMapper : Profile
+public class CityProfile : Profile
 {
-    public CityMapper()
+    public CityProfile()
     {
         CreateMap<CreateCityDto, City>();
         CreateMap<UpdateCityDto, City>();

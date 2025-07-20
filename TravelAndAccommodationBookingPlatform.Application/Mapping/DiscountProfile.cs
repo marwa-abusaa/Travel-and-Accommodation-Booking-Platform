@@ -4,9 +4,9 @@ using TravelAndAccommodationBookingPlatform.Core.Entities;
 
 namespace TravelAndAccommodationBookingPlatform.Application.Mapping;
 
-public class DiscountMapper : Profile
+public class DiscountProfile : Profile
 {
-    public DiscountMapper()
+    public DiscountProfile()
     {
         CreateMap<CreateDiscountDto, Discount>();
         CreateMap<Discount, DiscountResponseDto>();
