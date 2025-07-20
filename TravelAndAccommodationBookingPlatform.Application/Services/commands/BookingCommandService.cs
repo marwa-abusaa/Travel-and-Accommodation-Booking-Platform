@@ -15,6 +15,7 @@ public class BookingCommandService : IBookingCommandService
     private readonly IBookingRepository _bookingRepository;
     private readonly IBookingCreationService _bookingCreationService;
     private readonly IBookingConfirmationService _bookingConfirmationService;
+    private readonly IRoomRepository _roomRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<BookingCommandService> _logger;
     private readonly IMapper _mapper;
@@ -22,7 +23,8 @@ public class BookingCommandService : IBookingCommandService
     public BookingCommandService(
         IBookingRepository bookingRepository,
         IBookingCreationService bookingCreationService,
-        IBookingConfirmationService bookingConfirmationService, 
+        IBookingConfirmationService bookingConfirmationService,
+        IRoomRepository roomRepository,
         IUnitOfWork unitOfWork,
         ILogger<BookingCommandService> logger,
         IMapper mapper)
@@ -30,21 +32,47 @@ public class BookingCommandService : IBookingCommandService
         _bookingRepository = bookingRepository;
         _bookingCreationService = bookingCreationService;
         _bookingConfirmationService = bookingConfirmationService;
+        _roomRepository = roomRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
         _mapper = mapper;
     }
 
-    public async Task<BookingResponseDto> AddBookingAsync(CreateBookingDto createBookingDto)
+    public async Task<BookingResponseDto> AddBookingAsync(CreateBookingDto dto)
     {
-        _logger.LogInformation("Starting booking process for user ID {UserId}", createBookingDto.UserId);
+        _logger.LogInformation("Starting booking process for user ID {UserId}", dto.UserId);
 
-        var bookingToCreate = _mapper.Map<Booking>(createBookingDto);
+        var rooms = await GetRoomsByIdsAsync(dto.RoomIds);
+
+        var bookingToCreate = new Booking
+        {
+            UserId = dto.UserId,
+            Rooms = rooms,
+            Remarks = dto.Remarks ?? string.Empty,
+            CheckInDate = dto.CheckInDate,
+            CheckOutDate = dto.CheckOutDate,
+            PaymentType=dto.PaymentType
+        };
+
         var booking = await _bookingCreationService.CreateBookingAsync(bookingToCreate);
         await _bookingRepository.AddBookingAsync(booking);
         await _unitOfWork.SaveChangesAsync();
         await _bookingConfirmationService.SendBookingConfirmationAsync(booking);
         return _mapper.Map<BookingResponseDto>(booking);
+    }
+
+    private async Task<List<Room>> GetRoomsByIdsAsync(IEnumerable<int> roomIds)
+    {
+        var rooms = new List<Room>();
+
+        foreach (var roomId in roomIds)
+        {
+            var room = await _roomRepository.GetRoomByIdAsync(roomId);
+            if (room is null)
+                throw new NotFoundException($"Room with ID {roomId} not found");
+            rooms.Add(room);
+        }
+        return rooms;
     }
 
     public async Task DeleteBookingByIdAsync(int bookingId)

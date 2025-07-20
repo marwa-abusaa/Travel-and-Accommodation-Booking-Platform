@@ -43,6 +43,7 @@ public class InvoiceCommandService : IInvoiceCommandService
         }
 
         var invoice = _mapper.Map<Invoice>(createInvoiceDto);
+        invoice.TotalAmount = booking.TotalPriceAfterDiscount;
         var addedInvoice = await _invoiceRopsitory.AddInvoiceAsync(invoice);
 
         await _unitOfWork.SaveChangesAsync();
@@ -52,20 +53,4 @@ public class InvoiceCommandService : IInvoiceCommandService
         return _mapper.Map<InvoiceResponseDto>(addedInvoice);
     }
 
-    public async Task UpdateInvoiceAsync(UpdateInvoiceDto updateInvoiceDto)
-    {
-        var existingInvoice = await _invoiceRopsitory.GetInvoiceByIdAsync(updateInvoiceDto.InvoiceId);
-        if (existingInvoice is null)
-        {
-            _logger.LogWarning("Invoice with ID {InvoiceId} not found.", updateInvoiceDto.InvoiceId);
-            throw new NotFoundException($"Invoice with ID '{updateInvoiceDto.InvoiceId}' not found.");
-        }
-
-        _mapper.Map(updateInvoiceDto, existingInvoice);
-        await _invoiceRopsitory.UpdateInvoiceAsync(existingInvoice);
-
-        await _unitOfWork.SaveChangesAsync();
-
-        _logger.LogInformation("Invoice with ID {InvoiceId} updated successfully.", updateInvoiceDto.InvoiceId);
-    }
 }

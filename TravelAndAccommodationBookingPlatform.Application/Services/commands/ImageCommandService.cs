@@ -126,7 +126,12 @@ public class ImageCommandService : IImageCommandService
 
         if (updateImageDto.Type == ImageType.Room)
         {
-            var room = await _roomRepository.GetRoomByIdAsync(updateImageDto.RoomId);
+            if (!updateImageDto.RoomId.HasValue)
+            {
+                _logger.LogWarning("Room ID is required for image type Room.");
+                throw new ValidationException("Room ID is required for Room images.");
+            }
+            var room = await _roomRepository.GetRoomByIdAsync(updateImageDto.RoomId.Value);
             if (room is null)
             {
                 _logger.LogWarning("Room with ID {RoomId} not found.", updateImageDto.RoomId);
