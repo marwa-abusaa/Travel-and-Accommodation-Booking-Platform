@@ -13,7 +13,7 @@ namespace TravelAndAccommodationBookingPlatform.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/hotels/{hotelId:int}/reviews")]
-[Authorize(Roles = UserRoles.Guest)]
+[Authorize(Roles = UserRoles.User)]
 public class ReviewsController : ControllerBase
 {
     private readonly IReviewCommandService _reviewCommandService;

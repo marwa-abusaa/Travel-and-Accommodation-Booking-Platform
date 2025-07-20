@@ -10,7 +10,7 @@ public class AuthProfile : Profile
     public AuthProfile()
     {
         CreateMap<SignUpRequestDto, SignUpDto>()
-           .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => UserRoles.Guest));
+           .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => UserRoles.User));
 
         CreateMap<LogInRequestDto, LogInDto>();
     }

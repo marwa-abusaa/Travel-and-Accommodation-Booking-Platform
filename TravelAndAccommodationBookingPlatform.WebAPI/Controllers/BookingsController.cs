@@ -12,7 +12,7 @@ namespace TravelAndAccommodationBookingPlatform.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/bookings")]
-[Authorize(Roles = UserRoles.Guest)]
+[Authorize(Roles = UserRoles.User)]
 public class BookingsController : ControllerBase
 {
     private readonly IBookingCommandService _bookingCommandService;
