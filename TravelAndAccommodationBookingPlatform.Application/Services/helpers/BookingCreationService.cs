@@ -35,13 +35,6 @@ public class BookingCreationService : IBookingCreationService
             throw new NotFoundException($"User with ID {booking.UserId} not found.");
         }
 
-        if (booking.CheckInDate >= booking.CheckOutDate)
-        {
-            _logger.LogWarning("Invalid date range: CheckInDate {CheckInDate} >= CheckOutDate {CheckOutDate}", booking.CheckInDate, booking.CheckOutDate);
-            throw new ValidationException("Check-out date must be after check-in date.");
-        }
-
-
         decimal totalBeforeDiscount = 0;
         decimal totalAfterDiscount = 0;
         var validRooms = new List<Room>();
@@ -67,14 +60,11 @@ public class BookingCreationService : IBookingCreationService
             validRooms.Add(room);
 
             int nights = booking.CheckOutDate.DayNumber - booking.CheckInDate.DayNumber;
-            if (nights <= 0)
-            {
-                _logger.LogWarning("Invalid number of nights: {Nights}", nights);
-                throw new ValidationException("Booking must be for at least one night.");
-            }
+            Console.WriteLine($"nights={nights}");
 
             decimal basePrice = room.PricePerNight * nights;
             totalBeforeDiscount += basePrice;
+            Console.WriteLine($"totalBeforeDiscount={totalBeforeDiscount}");
 
             var checkInDateTime = booking.CheckInDate.ToDateTime(TimeOnly.MinValue);
             var checkOutDateTime = booking.CheckOutDate.ToDateTime(TimeOnly.MinValue);
@@ -84,11 +74,14 @@ public class BookingCreationService : IBookingCreationService
             if (discount != null)
             {
                 var discounted = basePrice * (1 - discount.Percentage / 100m);
+                Console.WriteLine($"discounted={discounted}");
                 totalAfterDiscount += discounted;
+                Console.WriteLine($"totalAfterDiscount={totalAfterDiscount}");
             }
             else
             {
                 totalAfterDiscount += basePrice;
+                Console.WriteLine($"totalAfterNoooDiscount={totalAfterDiscount}");
             }
         }
 
