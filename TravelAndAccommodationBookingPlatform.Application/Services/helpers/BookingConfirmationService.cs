@@ -6,11 +6,11 @@ namespace TravelAndAccommodationBookingPlatform.Application.Services.Helpers;
 
 public class BookingConfirmationService : IBookingConfirmationService
 {
-    private readonly BookingHtmlBuilder _htmlBuilder;
+    private readonly IBookingHtmlBuilder _htmlBuilder;
     private readonly IPdfGeneratorService _pdfGenerator;
     private readonly IEmailService _emailService;
 
-    public BookingConfirmationService(BookingHtmlBuilder htmlBuilder,
+    public BookingConfirmationService(IBookingHtmlBuilder htmlBuilder,
         IPdfGeneratorService pdfGenerator, IEmailService emailService)
     {
         _htmlBuilder = htmlBuilder;
