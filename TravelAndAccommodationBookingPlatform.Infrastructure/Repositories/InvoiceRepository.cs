@@ -20,14 +20,9 @@ public class InvoiceRepository : IInvoiceRepository
         return newInvoice.Entity;
     }
 
-    public async Task<Invoice?> GetInvoiceByBookingIdAsync(int bookingId)
-    {
-        return await _context.Invoices.FirstOrDefaultAsync(i => i.BookingId == bookingId);
-    }
-
     public async Task<Invoice?> GetInvoiceByIdAsync(int invoiceId)
     {
-        return await _context.Invoices.FindAsync(invoiceId);
+        return await _context.Invoices.Include(i => i.Booking).FirstOrDefaultAsync(i => i.InvoiceId == invoiceId);
     }
 
     public async Task<IEnumerable<Invoice>> GetUserInvoicesByUserIdAsync(int userId)
@@ -38,11 +33,4 @@ public class InvoiceRepository : IInvoiceRepository
             .ToListAsync();
     }
 
-    public async Task UpdateInvoiceAsync(Invoice invoice)
-    {
-        if (await GetInvoiceByIdAsync(invoice.InvoiceId) != null)
-        {
-            _context.Invoices.Update(invoice);
-        }
-    }
 }
