@@ -64,7 +64,7 @@ public class RoomRepository : IRoomRepository
         return await _context.Rooms.Include(r => r.Hotel).FirstOrDefaultAsync(r => r.RoomId == roomId);
     }
 
-    
+
     public async Task<bool> IsRoomAvailableAsync(int roomId, DateOnly fromDate, DateOnly toDate)
     {
         var room = await _context.Rooms

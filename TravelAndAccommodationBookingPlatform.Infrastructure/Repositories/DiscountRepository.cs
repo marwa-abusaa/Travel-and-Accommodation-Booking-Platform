@@ -49,4 +49,5 @@ public class DiscountRepository : IDiscountRepository
         .OrderByDescending(d => d.Percentage)
         .FirstOrDefaultAsync();
     }
+
 }

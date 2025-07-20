@@ -115,7 +115,7 @@ public class HotelRepository : IHotelRepository
     public IQueryable<Hotel> GetAllAsQueryable()
     {
         return _context.Hotels
-            .Include(h=>h.Owner)
+            .Include(h => h.Owner)
             .Include(h => h.Rooms)
                 .ThenInclude(r => r.Bookings)
             .AsQueryable();
