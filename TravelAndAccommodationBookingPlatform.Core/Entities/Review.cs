@@ -10,5 +10,5 @@ public class Review : AuditableEntity
     public Hotel Hotel { get; set; }
     public User User { get; set; }
     public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
+    public override DateTime? UpdatedAt { get; set; }
 }
