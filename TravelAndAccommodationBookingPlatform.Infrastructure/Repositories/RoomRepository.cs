@@ -33,8 +33,6 @@ public class RoomRepository : IRoomRepository
 
     public async Task<PaginatedResult<Room>> GetAvailableRoomsByHotelIdAsync(int hotelId, PaginationMetadata pagination)
     {
-        pagination.TotalCount = await _context.Rooms.CountAsync();
-
         if (pagination.PageNumber > pagination.TotalPages && pagination.TotalPages != 0)
             pagination.PageNumber = pagination.TotalPages;
 
@@ -48,7 +46,10 @@ public class RoomRepository : IRoomRepository
             .Where(r => r.HotelId == hotelId)
             .Where(r => !r.Bookings.Any(b =>
                 b.CheckInDate <= currentDate && b.CheckOutDate > currentDate))
+            .OrderBy(r => r.RoomId)
             .AsQueryable();
+
+        pagination.TotalCount = await query.CountAsync();
 
         var items = await query
             .Skip(skip)
@@ -60,7 +61,7 @@ public class RoomRepository : IRoomRepository
 
     public async Task<Room?> GetRoomByIdAsync(int roomId)
     {
-        return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId);
+        return await _context.Rooms.Include(r => r.Hotel).FirstOrDefaultAsync(r => r.RoomId == roomId);
     }
 
     
