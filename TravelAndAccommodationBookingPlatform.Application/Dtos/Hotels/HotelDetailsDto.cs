@@ -9,6 +9,7 @@ public class HotelDetailsDto
     public string Location { get; set; }
     public int StarRating { get; set; }
     public double ReviewRating { get; set; }
+    public string BriefDescription { get; set; }
     public string FullDescription { get; set; }
     public string CityName { get; set; }
     public string OwnerName { get; set; }

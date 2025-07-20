@@ -3,7 +3,7 @@
 public class UpdateCityDto
 {
     public int CityId { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Country { get; set; } = string.Empty;
-    public string PostOffice { get; set; } = string.Empty;
+    public string Name { get; set; }
+    public string Country { get; set; }
+    public string PostOffice { get; set; }
 }

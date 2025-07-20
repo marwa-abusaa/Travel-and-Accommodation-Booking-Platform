@@ -9,5 +9,5 @@ public class UpdateImageDto
     public string Path { get; set; }
     public ImageType Type { get; set; }
     public int HotelId { get; set; }
-    public int RoomId { get; set; }
+    public int? RoomId { get; set; }
 }
