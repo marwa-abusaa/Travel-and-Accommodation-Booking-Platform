@@ -19,5 +19,5 @@ public class Hotel : AuditableEntity
     public ICollection<Room> Rooms { get; set; } = new List<Room>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
     public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
+    public override DateTime? UpdatedAt { get; set; }
 }
