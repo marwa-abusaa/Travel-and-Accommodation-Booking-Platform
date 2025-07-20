@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Sieve.Models;
 using Sieve.Services;
 using TravelAndAccommodationBookingPlatform.Application.Dtos.Cities;
 using TravelAndAccommodationBookingPlatform.Application.Interfaces.Queries;
@@ -55,18 +56,19 @@ public class CityQueryService : ICityQueryService
             throw new ArgumentException("Count must be greater than zero.", nameof(count));
         }
             
-        var mostCities = await _cityRepository.GetMostVisitedCitiesAsync(5);
+        var mostCities = await _cityRepository.GetMostVisitedCitiesAsync(count);
 
         _logger.LogInformation("Retrieved {Count} most visited cities.", mostCities.Count());
 
         return _mapper.Map<IEnumerable<CityResponseDto>>(mostCities);
     }
 
-    public async Task<PaginatedResult<AdminCityResponseDto>> SearchCitiesAsync(AdminCitySearchRequest request)
+    public async Task<PaginatedResult<AdminCityResponseDto>> SearchCitiesAsync(SieveModel request)
     {
         var query = _cityRepository.GetAllAsQueryable()
             .Select(c => new AdminCityResponseDto
             {
+                CityId=c.CityId,
                 Name = c.Name,
                 Country = c.Country,
                 PostOffice = c.PostOffice,
@@ -75,21 +77,23 @@ public class CityQueryService : ICityQueryService
                 UpdatedAt = c.UpdatedAt
             });
 
-        var filtered = _sieveProcessor.Apply(request, query);
 
-        var total = await filtered.CountAsync();
-        var data = await filtered.ToListAsync();
+        var filtered = _sieveProcessor.Apply(request, query, applyPagination: false);
+        var totalCount = await filtered.CountAsync();
+
+        var pagedQuery = _sieveProcessor.Apply(request, query);
+
+        var pagination = new PaginationMetadata
+        {
+            PageNumber = request.Page ?? 1,
+            PageSize = request.PageSize ?? 10,
+            TotalCount = totalCount
+        };
+
+        var data = await pagedQuery.ToListAsync();
 
         _logger.LogInformation($"Successfully retrieved Cities search result");
 
-        return new PaginatedResult<AdminCityResponseDto>(
-            data,
-            new PaginationMetadata
-            {
-                PageNumber = request.Page ?? 1,
-                PageSize = request.PageSize ?? 10,
-                TotalCount = total
-            });
-
+        return new PaginatedResult<AdminCityResponseDto>(data, pagination);
     }
 }

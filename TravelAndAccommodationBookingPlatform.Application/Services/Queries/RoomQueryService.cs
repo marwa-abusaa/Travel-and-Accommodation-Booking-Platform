@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Sieve.Models;
 using Sieve.Services;
 using TravelAndAccommodationBookingPlatform.Application.Dtos.Discounts;
 using TravelAndAccommodationBookingPlatform.Application.Dtos.Images;
@@ -54,7 +55,9 @@ public class RoomQueryService : IRoomQueryService
 
         _logger.LogInformation("Retrieved {Count} available rooms for hotel ID {HotelId}.", rooms.Items.Count, hotelId);
         
-        return _mapper.Map<PaginatedResult<RoomResponseDto>>(rooms);
+        var dto =_mapper.Map<List<RoomResponseDto>>(rooms.Items);
+
+        return new PaginatedResult<RoomResponseDto>(dto, pagination);
     }
 
     public async Task<RoomDetailsDto?> GetRoomByIdAsync(int roomId)
@@ -79,7 +82,7 @@ public class RoomQueryService : IRoomQueryService
         return dto;
     }
 
-    public async Task<PaginatedResult<AdminRoomResponseDto>> SearchRoomsAsync(AdminRoomSearchRequest request)
+    public async Task<PaginatedResult<AdminRoomResponseDto>> SearchRoomsAsync(SieveModel request)
     {
         _logger.LogInformation("Admin room search initiated. Page: {Page}, PageSize: {PageSize}",
            request.Page, request.PageSize);
@@ -98,21 +101,23 @@ public class RoomQueryService : IRoomQueryService
                 UpdatedAt = r.UpdatedAt
             });
 
-        var filtered = _sieveProcessor.Apply(request, query);
+        var filtered = _sieveProcessor.Apply(request, query, applyPagination: false);
+        var totalCount = await filtered.CountAsync();
 
-        var total = await filtered.CountAsync();
-        var data = await filtered.ToListAsync();
+        var pagedQuery = _sieveProcessor.Apply(request, query);
 
-        _logger.LogInformation("Admin room search completed. Total matched rooms: {Total}", total);
+        var pagination = new PaginationMetadata
+        {
+            PageNumber = request.Page ?? 1,
+            PageSize = request.PageSize ?? 10,
+            TotalCount = totalCount
+        };
 
-        return new PaginatedResult<AdminRoomResponseDto>(
-            data,
-            new PaginationMetadata
-            {
-                PageNumber = request.Page ?? 1,
-                PageSize = request.PageSize ?? 10,
-                TotalCount = total
-            });
+        var data = await pagedQuery.ToListAsync();
+
+        _logger.LogInformation("Admin room search completed. Total matched rooms: {Total}", totalCount);
+
+        return new PaginatedResult<AdminRoomResponseDto>(data, pagination);
     }
 
 }

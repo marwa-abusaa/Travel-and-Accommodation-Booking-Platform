@@ -9,6 +9,7 @@ using TravelAndAccommodationBookingPlatform.Core.Exceptions;
 using TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Sieve.Models;
 
 namespace TravelAndAccommodationBookingPlatform.Application.Services.Queries;
 
@@ -81,7 +82,7 @@ public class HotelQueryService : IHotelQueryService
         var hotels = await _hotelRepository.GetRecentVisitedHotelsByUserIdAsync(userId);
 
         _logger.LogInformation("Successfully fetched recently visited hotels for user ID: {UserId}", userId);
-
+       
         return _mapper.Map<IEnumerable<RecentHotelDto>>(hotels);
     }
 
@@ -138,7 +139,7 @@ public class HotelQueryService : IHotelQueryService
             Name = h.Name,
             Location = h.Location,
             StarRating = h.StarRating,
-            Thumbnail = h.Thumbnail,
+            Thumbnail = _mapper.Map<ImageResponseDto>(h.Thumbnail),
             PricePerNight = h.Rooms.Any()
             ? (double)h.Rooms.Min(r => r.PricePerNight)
             : 0
@@ -167,7 +168,7 @@ public class HotelQueryService : IHotelQueryService
             Name = h.Name,
             Location = h.Location,
             StarRating = h.StarRating,
-            Thumbnail = h.Thumbnail,
+            Thumbnail = _mapper.Map<ImageResponseDto>(h.Thumbnail),
             PricePerNight = h.Rooms.Any()
             ? (double)h.Rooms.Min(r => r.PricePerNight)
             : 0
@@ -222,7 +223,7 @@ public class HotelQueryService : IHotelQueryService
     }
 
 
-    public async Task<PaginatedResult<AdminHotelResponseDto>> SearchHotelsAdminAsync(AdminHotelSearchRequest request)
+    public async Task<PaginatedResult<AdminHotelResponseDto>> SearchHotelsAdminAsync(SieveModel request)
     {
         _logger.LogInformation("Admin hotel search initiated. Filters: Page={Page}, PageSize={PageSize}",
            request.Page, request.PageSize);
@@ -239,21 +240,22 @@ public class HotelQueryService : IHotelQueryService
               UpdatedAt = h.UpdatedAt
           });
 
+        var filtered = _sieveProcessor.Apply(request, query, applyPagination: false);
+        var totalCount = await filtered.CountAsync();
 
-        var filtered = _sieveProcessor.Apply(request, query);
+        var pagedQuery = _sieveProcessor.Apply(request, query);
 
-        var total = await filtered.CountAsync();
-        var data = await filtered.ToListAsync();
+        var pagination = new PaginationMetadata
+        {
+            PageNumber = request.Page ?? 1,
+            PageSize = request.PageSize ?? 10,
+            TotalCount = totalCount
+        };
 
-        _logger.LogInformation("Admin hotel search completed. Total matches: {Total}", total);
+        var data = await pagedQuery.ToListAsync();
 
-        return new PaginatedResult<AdminHotelResponseDto>(
-            data,
-            new PaginationMetadata
-            {
-                PageNumber = request.Page ?? 1,
-                PageSize = request.PageSize ?? 10,
-                TotalCount = total
-            });
+        _logger.LogInformation("Admin hotel search completed. Total matches: {Total}", totalCount);
+
+        return new PaginatedResult<AdminHotelResponseDto>(data, pagination);
     }   
 }

@@ -37,7 +37,7 @@ public class UserQueryService : IUserQueryService
             _logger.LogWarning("Login failed: Invalid credentials for email '{Email}'.", logInDto.Email);
             throw new InvalidCredentialsException("Invalid email or password.");
         }
-
+        
         var jwtToken = _jwtTokenGenerator.GenerateToken(authenticatedUser);
 
         _logger.LogInformation("Login successful for email: {Email}", logInDto.Email);

@@ -42,7 +42,9 @@ public class ReviewQueryService : IReviewQueryService
 
         _logger.LogInformation("Fetched {Count} reviews for hotel ID {HotelId}.", reviews.Items.Count, hotelId);
 
-        return _mapper.Map<PaginatedResult<ReviewResponseDto>>(reviews);
+        var dto = _mapper.Map<List<ReviewResponseDto>>(reviews.Items);
+
+        return new PaginatedResult<ReviewResponseDto>(dto, pagination);
     }
 
     public async Task<ReviewResponseDto?> GetReviewByIdAsync(int reviewId)
