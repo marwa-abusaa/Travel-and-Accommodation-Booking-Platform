@@ -9,5 +9,5 @@ public class InvoiceResponseDto
     public DateTime InvoiceDate { get; set; } = DateTime.UtcNow;
     public decimal TotalAmount { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
-    public string? Notes { get; set; } = string.Empty;
+    public string Notes { get; set; }
 }
