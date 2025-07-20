@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TravelAndAccommodationBookingPlatform.Core.Entities;
 using TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
@@ -9,9 +9,9 @@ namespace TravelAndAccommodationBookingPlatform.Infrastructure.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly AppDbContext _context;
-    private readonly IPasswordHasher _passwordHasher;
+    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UserRepository(AppDbContext context, IPasswordHasher passwordHasher)
+    public UserRepository(AppDbContext context, IPasswordHasher<User> passwordHasher)
     {
         _context = context;
         _passwordHasher = passwordHasher;
@@ -19,10 +19,10 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> AuthenticateUserAsync(string email, string password)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == email);
         if (user != null)
         {
-            var verificationResult = _passwordHasher.VerifyHashedPassword(user.Password, password);
+            var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
             if (verificationResult == PasswordVerificationResult.Success)
                 return user;
         }
@@ -33,7 +33,7 @@ public class UserRepository : IUserRepository
     {
         if(!await IsEmailExistsAsync(user.Email))
         {
-            user.Password = _passwordHasher.HashPassword(user.Password);
+            user.Password = _passwordHasher.HashPassword(user, user.Password);
             await _context.Users.AddAsync(user);
         }
     }

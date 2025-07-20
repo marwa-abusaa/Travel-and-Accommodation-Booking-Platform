@@ -31,12 +31,13 @@ public class BookingRepository : IBookingRepository
 
     public async Task<Booking?> GetBookingByIdAsync(int bookingId)
     {
-        return await _context.Bookings.FindAsync(bookingId);
+        return await _context.Bookings.Include(b => b.Rooms).FirstOrDefaultAsync(b => b.BookingId == bookingId);
     }
 
     public async Task<IEnumerable<Booking>> GetBookingsByUserIdAsync(int userId)
     {
         return await _context.Bookings
+            .Include(b => b.Rooms)
             .Where(b => b.UserId == userId)
             .OrderByDescending(b => b.BookingDate)
             .ToListAsync();

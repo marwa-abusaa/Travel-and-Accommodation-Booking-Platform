@@ -2,5 +2,5 @@
 
 public abstract class AuditableEntity
 {
-    public DateTime? UpdatedAt { get; set; }
+    public virtual DateTime? UpdatedAt { get; set; }
 }

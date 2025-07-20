@@ -17,8 +17,7 @@ public class ImageConfiguration : IEntityTypeConfiguration<Image>
         builder.HasOne(im => im.Room)
                .WithMany(rm => rm.Images)
                .HasForeignKey(im => im.RoomId)
-               .OnDelete(DeleteBehavior.Restrict)
-               .IsRequired();
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(im => im.Hotel)
                .WithMany(h => h.Images)

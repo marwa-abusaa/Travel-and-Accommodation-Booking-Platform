@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TravelAndAccommodationBookingPlatform.Core.Entities;
 using TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
-using TravelAndAccommodationBookingPlatform.Core.Models;
 using TravelAndAccommodationBookingPlatform.Infrastructure.Data;
 
 namespace TravelAndAccommodationBookingPlatform.Infrastructure.Repositories;
@@ -40,23 +39,15 @@ public class DiscountRepository : IDiscountRepository
         return await _context.Discounts.Where(d => d.RoomId == roomId).ToListAsync();
     }
 
-    public async Task<PaginatedResult<Discount>> GetDiscountsAsync(PaginationMetadata pagination)
+    public async Task<Discount?> GetBestValidDiscountForRoomAsync(int roomId, DateTime checkIn, DateTime checkOut)
     {
-        pagination.TotalCount = await _context.Discounts.CountAsync();
-
-        if (pagination.PageNumber > pagination.TotalPages && pagination.TotalPages != 0)
-            pagination.PageNumber = pagination.TotalPages;
-
-        var skip = (pagination.PageNumber - 1) * pagination.PageSize;
-
-        var query = _context.Discounts.AsQueryable();
-
-        var items = await query
-            .Skip(skip)
-            .Take(pagination.PageSize)
-            .ToListAsync();
-
-        return new PaginatedResult<Discount>(items, pagination);
+        return await _context.Discounts
+        .Where(d =>
+            d.RoomId == roomId &&
+            d.StartDate < checkOut &&
+            d.EndDate > checkIn)
+        .OrderByDescending(d => d.Percentage)
+        .FirstOrDefaultAsync();
     }
 
     public async Task<Discount?> GetBestValidDiscountForRoomAsync(int roomId, DateTime checkIn, DateTime checkOut)
