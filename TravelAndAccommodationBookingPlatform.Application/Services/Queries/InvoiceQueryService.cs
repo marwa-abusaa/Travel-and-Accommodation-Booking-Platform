@@ -11,7 +11,6 @@ namespace TravelAndAccommodationBookingPlatform.Application.Services.Queries;
 public class InvoiceQueryService : IInvoiceQueryService
 {
     private readonly IInvoiceRepository _invoiceRopsitory;
-    private readonly IBookingRepository _bookingRopsitory;
     private readonly IUserRepository _userRepository;
     private readonly IInvoiceHtmlBuilder _invoiceHtmlBuilder;
     private readonly IPdfGeneratorService _pdfGenerator;
@@ -20,7 +19,6 @@ public class InvoiceQueryService : IInvoiceQueryService
 
     public InvoiceQueryService(
         IInvoiceRepository invoiceRopsitory,
-        IBookingRepository bookingRopsitory, 
         IUserRepository userRepository, 
         IInvoiceHtmlBuilder invoiceHtmlBuilder, 
         IPdfGeneratorService pdfGenerator, 
@@ -28,7 +26,6 @@ public class InvoiceQueryService : IInvoiceQueryService
         IMapper mapper)
     {
         _invoiceRopsitory = invoiceRopsitory;
-        _bookingRopsitory = bookingRopsitory;
         _userRepository = userRepository;
         _invoiceHtmlBuilder = invoiceHtmlBuilder;
         _pdfGenerator = pdfGenerator;
@@ -36,31 +33,19 @@ public class InvoiceQueryService : IInvoiceQueryService
         _mapper = mapper;
     }
 
-    public async Task<InvoiceResponseDto?> GetInvoiceByBookingIdAsync(int bookingId)
-    {
-        _logger.LogInformation("Fetching invoice for booking ID {BookingId}.", bookingId);
-
-        var booking = await _bookingRopsitory.GetBookingByIdAsync(bookingId);
-        if (booking is null)
-        {
-            _logger.LogWarning("Booking with ID {BookingId} not found.", bookingId);
-            throw new NotFoundException($"Booking with ID '{bookingId}' not found.");
-        }
-
-        var invoice = await _invoiceRopsitory.GetInvoiceByBookingIdAsync(bookingId);
-
-        _logger.LogInformation("Invoice for booking ID {BookingId} retrieved successfully.", bookingId);
-
-        return _mapper.Map<InvoiceResponseDto>(invoice);
-    }
-
-    public async Task<InvoiceResponseDto?> GetInvoiceByIdAsync(int invoiceId)
+    public async Task<InvoiceResponseDto?> GetInvoiceByIdAsync(int invoiceId, int currentUserId)
     {
         var invoice = await _invoiceRopsitory.GetInvoiceByIdAsync(invoiceId);
         if (invoice is null)
         {
             _logger.LogWarning("Invoice with ID {InvoiceId} not found.", invoiceId);
             throw new NotFoundException($"Invoice with ID '{invoiceId}' not found.");
+        }
+
+        if (invoice.Booking.UserId != currentUserId)
+        {
+            _logger.LogWarning("User {UserId} tried to access invoice {InvoiceId} which does not belong to them.", currentUserId, invoiceId);
+            throw new ForbiddenAccessException("You are not allowed to access this invoice.");
         }
 
         _logger.LogInformation("Invoice with ID {InvoiceId} retrieved successfully.", invoiceId);
@@ -86,7 +71,7 @@ public class InvoiceQueryService : IInvoiceQueryService
         return _mapper.Map<IEnumerable<InvoiceResponseDto>>(invoices);
     }
 
-    public async Task<byte[]> PrintInvoice(int invoiceId)
+    public async Task<byte[]> PrintInvoice(int invoiceId, int currentUserId)
     {
         _logger.LogInformation("Generating PDF for invoice ID {InvoiceId}.", invoiceId);
 
@@ -95,6 +80,12 @@ public class InvoiceQueryService : IInvoiceQueryService
         {
             _logger.LogWarning("Invoice with ID {InvoiceId} not found.", invoiceId);
             throw new NotFoundException($"Invoice with ID '{invoiceId}' not found.");
+        }
+
+        if (invoice.Booking.UserId != currentUserId)
+        {
+            _logger.LogWarning("User {UserId} tried to access invoice {InvoiceId} which does not belong to them.", currentUserId, invoiceId);
+            throw new ForbiddenAccessException("You are not allowed to access this invoice.");
         }
 
         var htmlContent = _invoiceHtmlBuilder.BuildInvoiceHtml(invoice);

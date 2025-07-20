@@ -4,7 +4,6 @@ using TravelAndAccommodationBookingPlatform.Application.Dtos.Discounts;
 using TravelAndAccommodationBookingPlatform.Application.Interfaces.Queries;
 using TravelAndAccommodationBookingPlatform.Core.Exceptions;
 using TravelAndAccommodationBookingPlatform.Core.Interfaces.Repositories;
-using TravelAndAccommodationBookingPlatform.Core.Models;
 
 namespace TravelAndAccommodationBookingPlatform.Application.Services.Queries;
 
@@ -42,7 +41,7 @@ public class DiscountQueryService : IDiscountQueryService
         return _mapper.Map<DiscountResponseDto>(discount);
     }
 
-    public async Task<IEnumerable<DiscountResponseDto>> GetDiscountByRoomIdAsync(int roomId)
+    public async Task<IEnumerable<DiscountResponseDto>> GetDiscountsByRoomIdAsync(int roomId)
     {
         _logger.LogInformation("Fetching discounts for room ID: {RoomId}", roomId);
 
@@ -60,14 +59,4 @@ public class DiscountQueryService : IDiscountQueryService
         return _mapper.Map<List<DiscountResponseDto>>(discounts);
     }
 
-    public async Task<PaginatedResult<DiscountResponseDto>> GetDiscountsAsync(PaginationMetadata pagination)
-    {
-        _logger.LogInformation("Fetching all discounts");
-
-        var discounts = await _discountRepository.GetDiscountsAsync(pagination);
-
-        _logger.LogInformation("Retrieved {Count} discounts.", discounts.Items.Count);
-
-        return _mapper.Map<PaginatedResult<DiscountResponseDto>>(discounts);
-    }
 }
