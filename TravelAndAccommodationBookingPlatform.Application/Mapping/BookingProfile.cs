@@ -4,11 +4,10 @@ using TravelAndAccommodationBookingPlatform.Core.Entities;
 
 namespace TravelAndAccommodationBookingPlatform.Application.Mapping;
 
-public class BookingMapper : Profile
+public class BookingProfile : Profile
 {
-    public BookingMapper()
+    public BookingProfile()
     {
-        CreateMap<CreateBookingDto, Booking>();
         CreateMap<Booking, BookingResponseDto>();
     }
 }

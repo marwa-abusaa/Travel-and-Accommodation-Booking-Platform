@@ -4,9 +4,9 @@ using TravelAndAccommodationBookingPlatform.Core.Entities;
 
 namespace TravelAndAccommodationBookingPlatform.Application.Mapping;
 
-public class OwnerMapper : Profile
+public class OwnerProfile : Profile
 {
-    public OwnerMapper()
+    public OwnerProfile()
     {
         CreateMap<CreateOwnerDto, Owner>();
         CreateMap<UpdateOwnerDto, Owner>();

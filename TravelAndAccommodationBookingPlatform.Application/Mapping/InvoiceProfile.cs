@@ -4,12 +4,11 @@ using TravelAndAccommodationBookingPlatform.Core.Entities;
 
 namespace TravelAndAccommodationBookingPlatform.Application.Mapping;
 
-public class InvoiceMapper : Profile
+public class InvoiceProfile : Profile
 {
-    public InvoiceMapper()
+    public InvoiceProfile()
     {
         CreateMap<CreateInvoiceDto, Invoice>();
-        CreateMap<UpdateInvoiceDto, Invoice>();
         CreateMap<Invoice, InvoiceResponseDto>();
     }
 }
