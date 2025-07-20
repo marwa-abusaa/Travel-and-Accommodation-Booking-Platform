@@ -10,10 +10,12 @@ namespace TravelAndAccommodationBookingPlatform.Infrastructure.Repositories;
 public class HotelRepository : IHotelRepository
 {
     private readonly AppDbContext _context;
+    private readonly IBookingRepository _bookingRepository;
 
-    public HotelRepository(AppDbContext context)
+    public HotelRepository(AppDbContext context, IBookingRepository bookingRepository)
     {
         _context = context;
+        _bookingRepository = bookingRepository;
     }
 
     public async Task<Hotel> AddHotelAsync(Hotel hotel)
@@ -74,26 +76,40 @@ public class HotelRepository : IHotelRepository
 
     public async Task<IEnumerable<VisitedHotelDto>> GetRecentVisitedHotelsByUserIdAsync(int userId)
     {
-        return await _context.Bookings
-        .Where(b => b.UserId == userId)
-        .OrderByDescending(b => b.BookingDate)
-        .Select(b => new
-        {
-            Booking = b,
-            Hotel = b.Rooms.First().Hotel 
-        })
-        .GroupBy(x => x.Hotel.HotelId)
-        .Select(g => new VisitedHotelDto
-        {
-            HotelId = g.First().Hotel.HotelId,
-            HotelName = g.First().Hotel.Name,
-            CityName = g.First().Hotel.City.Name,
-            StarRating = g.First().Hotel.StarRating,
-            Thumbnail = g.First().Hotel.Thumbnail,
-            TotalPrice = g.First().Booking.Invoice.TotalAmount
-        })
-        .Take(5)
-        .ToListAsync();
+        var bookingData = await _context.Bookings
+            .Where(b => b.UserId == userId)
+            .Include(b => b.Rooms)
+                .ThenInclude(r => r.Hotel)
+                    .ThenInclude(h => h.City)
+            .Include(b => b.Rooms)
+                .ThenInclude(r => r.Hotel)
+                    .ThenInclude(h => h.Thumbnail)
+            .OrderByDescending(b => b.BookingDate)
+            .ToListAsync();
+
+
+        var recentHotels = bookingData
+            .Select(b => new
+            {
+                Booking = b,
+                Hotel = b.Rooms.Select(r => r.Hotel).FirstOrDefault()
+            })
+            .Where(x => x.Hotel != null)
+            .GroupBy(x => x.Hotel.HotelId)
+            .Select(g => g.First()) 
+            .Take(5)
+            .Select(x => new VisitedHotelDto
+            {
+                HotelId = x.Hotel.HotelId,
+                HotelName = x.Hotel.Name,
+                CityName = x.Hotel.City.Name,
+                StarRating = x.Hotel.StarRating,
+                Thumbnail = x.Hotel.Thumbnail,
+                TotalPrice = x.Booking.TotalPriceAfterDiscount
+            })
+            .ToList();
+
+        return recentHotels;
     }
 
     public IQueryable<Hotel> GetAllAsQueryable()
