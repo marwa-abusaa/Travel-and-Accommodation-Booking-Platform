@@ -111,7 +111,6 @@ public class ReviewsController : ControllerBase
     /// <response code="401">User is not authenticated.</response>
     /// <response code="403">User is not authorized.</response>
     [HttpDelete("{reviewId:int}")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

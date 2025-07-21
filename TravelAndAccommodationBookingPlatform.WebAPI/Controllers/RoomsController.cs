@@ -229,7 +229,6 @@ public class RoomsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [AllowAnonymous]
     public async Task<ActionResult<ImageResponseDto>> GetRoomImage(int imageId)
     {
         var image = await _imageQueryService.GetImageByIdAsync(imageId);
