@@ -1,27 +1,26 @@
-# 🧭 Travel and Accommodation Booking Platform
+# 🧳 Travel and Accommodation Booking Platform
 
 ## 📌 Overview
 
-The **Travel and Accommodation Booking Platform** is a robust, full-featured web application built to replicate a real-world hotel booking system.  
-Developed during a professional training program, it follows **Clean Architecture principles**, ensuring modularity, scalability, and maintainability.
+The **Travel and Accommodation Booking Platform** is a robust, full-featured web application built to replicate a real-world hotel booking system. Developed during a professional training program, it follows **Clean Architecture principles**, ensuring modularity, scalability, and maintainability.
 
-This platform allows guests to seamlessly search, book, and review hotels, while giving admins full control over hotels, rooms, users, and operations.
+This platform allows users to seamlessly search, book, and review hotels, while giving admins full control over hotels, rooms, cities, and operations.
 
 ### ✨ Core Highlights
 
-- 🔐 User authentication  
-- 🏨 Hotel browsing & search  
-- 📅 Booking management  
-- 📊 Admin hotel control  
-- ⭐ Ratings & reviews  
-- 📄 PDF invoice generation 
-- 📧 Email notifications** with PDF booking details  
+- User authentication  
+- Hotel browsing & search  
+- Booking management  
+- Admin hotel control  
+- Ratings & reviews  
+- PDF invoice generation 
+- Email notifications - with PDF booking details  
 
 ---
 
 ## ⚙️ Tech Stack
 
-| Category             | Technology                     |
+| Layer             | Technology                     |
 |----------------------|--------------------------------|
 | Backend              | ASP.NET Core 9 (Web API)       |
 | ORM                  | Entity Framework Core 9        |
@@ -56,11 +55,12 @@ This project follows **Clean Architecture**:
 
 ### ✅ Prerequisites
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/)
+- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 - SQL Server
 - Visual Studio 2022+ or CLI
 
 ### ▶️ Run the App
+
 
 ### 1️⃣ Clone the Repository
 
@@ -71,10 +71,13 @@ cd TravelAndAccommodationBookingPlatform
 
 ### 2️⃣ Set Up Connection String
 Update your connection string in the environment variable:
+> It's recommended to store sensitive data like JWT secrets and connection strings in environment variables for enhanced security.
+
 
 ```bash
 var connectionString = Environment.GetEnvironmentVariable("TravelABP_DB_CONNECTION");
 ```
+
 
 ### 3️⃣ Apply Database Migrations
 
@@ -110,8 +113,8 @@ Uses **JWT Authentication**
 
 **Roles**:
 
-- **Admin**: Can manage owners, hotels, rooms, cities
-- **Guest**: Can browse & book hotels  
+- **Admin**: Can manage owners, hotels, rooms and cities
+- **User**: Can browse & book hotels  
 
 > Admins assign hotel Owners through the dashboard
 
@@ -182,7 +185,7 @@ Uses **JWT Authentication**
 | GET    | /api/hotels/{hotelId}/owner                      | Get owner info of a hotel (Public)               |
 | GET    | /api/hotels/featured-deals                       | Get featured hotel deals (Public)                |
 | GET    | /api/hotels/{id}                                 | Get hotel details by ID  (Public)                |
-| GET    | /api/hotels/search                               | Search hotels with filters   (Public)            |
+| GET    | /api/hotels/search                               | Search hotels with filters (Public)            |
 | GET    | /api/hotels/search-admin                         | Admin search for hotels (Admin only)             |
 | GET    | /api/hotels/{hotelId}/rooms/available            | Get available rooms for a hotel (Public)         |
 | POST   | /api/hotels/{hotelId}/images                     | Add image to hotel (Admin only)                  |
@@ -243,15 +246,16 @@ Uses **JWT Authentication**
 
 ## 🗃️ Database Schema
 The following Entity-Relationship Diagram (ERD) shows the structure of the database and how entities are related.
+
 ![ERD Diagram](ERD/TABP_ERD.png)
 
 ---
 
-👩‍💻 Author  
-Built by Marwa AbuSaa  
+## 👩‍💻 Author  
+Developed by **Marwa AbuSaa**
 Backend training by Footill Technology
 
 ---
 
-📜 License  
+## 📜 License  
 This project is licensed under the MIT License.
