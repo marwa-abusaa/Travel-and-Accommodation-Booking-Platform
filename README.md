@@ -254,7 +254,7 @@ The following Entity-Relationship Diagram (ERD) shows the structure of the datab
 ## 👩‍💻 Author  
 Developed by **Marwa AbuSaa**
 
-Backend training by Footill Technology
+Backend training by Foothill Technology
 
 ---
 
